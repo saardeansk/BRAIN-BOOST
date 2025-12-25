@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AIxplore – Pro AI Tools Dictionary</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4338ca;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #6366f1, #22d3ee);
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --filter-bg: #ffffff;
+        }
+
+        /* DARK MODE COLORS */
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1e1b4b, #0f172a);
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --header-bg: rgba(15, 23, 42, 0.9);
+            --filter-bg: #334155;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; transition: background 0.3s, color 0.3s; }
+        body { min-height: 100vh; background: var(--bg-gradient); color: var(--text-main); padding-bottom: 50px; }
+
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 26px; font-weight: 800; color: var(--primary); cursor: pointer; }
+        
+        .nav-controls { display: flex; align-items: center; gap: 20px; }
+
+        /* DARK MODE TOGGLE */
+        .theme-toggle {
+            background: none; border: 2px solid var(--primary);
+            color: var(--primary); padding: 5px 10px; border-radius: 20px;
+            cursor: pointer; font-weight: 700; font-size: 12px;
+        }
+        [data-theme="dark"] .theme-toggle { border-color: var(--accent); color: var(--accent); }
+
+        .signup-btn {
+            background: var(--primary); color: white;
+            padding: 10px 24px; border-radius: 12px;
+            border: none; font-weight: 700; cursor: pointer;
+        }
+
+        .user-btn { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .avatar {
+            width: 35px; height: 35px; background: var(--primary); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+        }
+
+        .hero { text-align: center; padding: 50px 20px; color: white; }
+        .hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 10px; }
+
+        .filter-bar {
+            max-width: 1000px; margin: -30px auto 30px;
+            background: var(--filter-bg); padding: 15px 25px; border-radius: 100px;
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .filter-bar input, .filter-bar select {
+            padding: 10px 15px; border-radius: 10px;
+            border: 1px solid #ddd; outline: none; background: var(--card-bg); color: var(--text-main);
+        }
+        #search { flex: 1; min-width: 150px; }
+
+        .btn {
+            padding: 9px 18px; border-radius: 50px; border: 1px solid #ddd;
+            background: var(--card-bg); color: var(--text-main); cursor: pointer; font-weight: 600;
+        }
+        .btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+        .card {
+            background: var(--card-bg); padding: 25px; border-radius: 24px;
+            position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .badge { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
+        .best-tag { display: inline-block; background: #e0e7ff; color: #4338ca; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: 700; margin-top: 8px; }
+        .stars { color: var(--accent); margin: 10px 0; font-weight: bold; }
+        .card p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+        
+        .visit-btn {
+            background: var(--primary); color: white; padding: 12px;
+            border-radius: 12px; text-align: center; text-decoration: none; font-weight: 700; display: block;
+        }
+
+        /* MODAL */
+        .modal-bg {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-bg.active { display: flex; }
+        .modal { background: var(--card-bg); color: var(--text-main); width: 90%; max-width: 360px; padding: 30px; border-radius: 24px; position: relative; }
+        .modal input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body data-theme="light">
+
+<header>
+    <div class="logo" onclick="location.reload()">BRAIN BOOST</div>
+    <div class="nav-controls">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </div>
+</header>
+
+<section class="hero">
+    <h1>AI Tools Dictionary</h1>
+    <p>Hand-picked "Best-In-Class" tools for students.</p>
+</section>
+
+<div class="filter-bar">
+    <input id="search" placeholder="🔍 Search AI names">
+    <select id="category">
+        <option value="all">All Categories</option>
+        <option value="study">Study</option>
+        <option value="writing">Writing</option>
+        <option value="coding">Coding</option>
+        <option value="design">Design</option>
+    </select>
+    <div class="btn" data-type="price" data-val="free">Free</div>
+    <div class="btn" data-type="price" data-val="freemium">Freemium</div>
+    <div class="btn" data-type="rating" data-val="4.5">⭐ 4.5+</div>
+</div>
+
+<section class="container">
+    <div class="grid" id="grid"></div>
+</section>
+
+<div class="modal-bg" id="modalBg">
+    <div class="modal">
+        <h2 style="margin-bottom:20px; text-align:center">Create Account</h2>
+        <input id="nameInput" placeholder="Full Name">
+        <input id="emailInput" placeholder="Email">
+        <button class="signup-btn" style="width:100%" onclick="signup()">Register</button>
+        <button style="margin-top:10px; background:none; border:none; color:var(--text-muted); width:100%; cursor:pointer" onclick="closeSignup()">Cancel</button>
+    </div>
+</div>
+
+<script>
+    const tools = [
+
+/* ========= AI ASSISTANTS (1–12) ========= */
+{name:"ChatGPT",cat:"assistant",price:"freemium",rating:4.8,best:"Ideas & Chat",desc:"Conversational AI.",url:"https://chat.openai.com"},
+{name:"Claude",cat:"assistant",price:"freemium",rating:4.7,best:"Reasoning",desc:"Long-context AI.",url:"https://claude.ai"},
+{name:"Grok",cat:"assistant",price:"paid",rating:4.5,best:"Live Data",desc:"Real-time insights.",url:"https://x.ai"},
+{name:"Google Gemini",cat:"assistant",price:"freemium",rating:4.7,best:"Research",desc:"Google AI assistant.",url:"https://gemini.google.com"},
+{name:"Perplexity",cat:"assistant",price:"freemium",rating:4.8,best:"AI Search",desc:"Search with citations.",url:"https://perplexity.ai"},
+{name:"Poe",cat:"assistant",price:"freemium",rating:4.6,best:"Multi-Model",desc:"Multiple AI bots.",url:"https://poe.com"},
+{name:"Pi AI",cat:"assistant",price:"free",rating:4.4,best:"Personal AI",desc:"Friendly AI chat.",url:"https://heypi.com"},
+{name:"YouChat",cat:"assistant",price:"free",rating:4.3,best:"Chat Search",desc:"Chat-based search.",url:"https://you.com"},
+{name:"Replika",cat:"assistant",price:"freemium",rating:4.2,best:"Companion",desc:"AI companion.",url:"https://replika.com"},
+{name:"Character AI",cat:"assistant",price:"freemium",rating:4.5,best:"Characters",desc:"Roleplay AI.",url:"https://character.ai"},
+{name:"ChatSonic",cat:"assistant",price:"freemium",rating:4.4,best:"Content Chat",desc:"Marketing chatbot.",url:"https://writesonic.com"},
+{name:"HuggingChat",cat:"assistant",price:"free",rating:4.3,best:"Open Source",desc:"Open AI chat.",url:"https://huggingface.co/chat"},
+
+/* ========= VIDEO (13–22) ========= */
+{name:"Synthesia",cat:"video",price:"paid",rating:4.6,best:"AI Avatars",desc:"AI presenter videos.",url:"https://synthesia.io"},
+{name:"Google Veo",cat:"video",price:"paid",rating:4.5,best:"Text→Video",desc:"Cinematic AI video.",url:"#"},
+{name:"OpusClip",cat:"video",price:"freemium",rating:4.4,best:"Shorts",desc:"Long to short videos.",url:"https://opus.pro"},
+{name:"Runway Gen-2",cat:"video",price:"paid",rating:4.7,best:"Video AI",desc:"Text-to-video.",url:"https://runwayml.com"},
+{name:"Pictory",cat:"video",price:"paid",rating:4.3,best:"Marketing Video",desc:"Script to video.",url:"https://pictory.ai"},
+{name:"HeyGen",cat:"video",price:"paid",rating:4.5,best:"Talking Avatars",desc:"AI avatars.",url:"https://heygen.com"},
+{name:"InVideo AI",cat:"video",price:"freemium",rating:4.4,best:"Video Maker",desc:"AI video creation.",url:"https://invideo.io"},
+{name:"Lumen5",cat:"video",price:"freemium",rating:4.3,best:"Social Video",desc:"Marketing videos.",url:"https://lumen5.com"},
+{name:"Kapwing AI",cat:"video",price:"freemium",rating:4.2,best:"Editor",desc:"AI video editing.",url:"https://kapwing.com"},
+{name:"Veed AI",cat:"video",price:"freemium",rating:4.3,best:"Subtitles",desc:"AI subtitles.",url:"https://veed.io"},
+
+/* ========= IMAGE (23–34) ========= */
+{name:"Midjourney",cat:"image",price:"paid",rating:4.9,best:"AI Art",desc:"High-quality art.",url:"https://midjourney.com"},
+{name:"DALL·E",cat:"image",price:"freemium",rating:4.8,best:"Image Gen",desc:"Text-to-image.",url:"https://openai.com"},
+{name:"Stable Diffusion",cat:"image",price:"free",rating:4.7,best:"Open Source",desc:"Image generation.",url:"https://stability.ai"},
+{name:"Leonardo AI",cat:"image",price:"freemium",rating:4.6,best:"Assets",desc:"Game assets.",url:"https://leonardo.ai"},
+{name:"Adobe Firefly",cat:"image",price:"freemium",rating:4.5,best:"Design AI",desc:"Creative images.",url:"https://adobe.com"},
+{name:"NightCafe",cat:"image",price:"freemium",rating:4.4,best:"Art",desc:"AI art generator.",url:"https://nightcafe.studio"},
+{name:"DreamStudio",cat:"image",price:"paid",rating:4.3,best:"Studio",desc:"Pro image gen.",url:"https://dreamstudio.ai"},
+{name:"Artbreeder",cat:"image",price:"freemium",rating:4.2,best:"Blend Art",desc:"Genetic art.",url:"https://artbreeder.com"},
+{name:"Playground AI",cat:"image",price:"freemium",rating:4.4,best:"Fast Images",desc:"Quick images.",url:"https://playgroundai.com"},
+{name:"Craiyon",cat:"image",price:"free",rating:4.1,best:"Free AI",desc:"Simple image AI.",url:"https://craiyon.com"},
+{name:"Fotor AI",cat:"image",price:"freemium",rating:4.3,best:"Photo AI",desc:"AI photo edit.",url:"https://fotor.com"},
+{name:"Pixlr AI",cat:"image",price:"freemium",rating:4.4,best:"Editor",desc:"AI image editor.",url:"https://pixlr.com"},
+
+/* ========= WRITING (35–46) ========= */
+{name:"Rytr",cat:"writing",price:"freemium",rating:4.3,best:"Blogs",desc:"Content writing.",url:"https://rytr.me"},
+{name:"Sudowrite",cat:"writing",price:"paid",rating:4.4,best:"Fiction",desc:"Creative writing.",url:"https://sudowrite.com"},
+{name:"Jasper",cat:"writing",price:"paid",rating:4.6,best:"Marketing",desc:"Brand copy.",url:"https://jasper.ai"},
+{name:"Copy.ai",cat:"writing",price:"freemium",rating:4.5,best:"Ads",desc:"Copywriting.",url:"https://copy.ai"},
+{name:"Grammarly",cat:"writing",price:"freemium",rating:4.7,best:"Grammar",desc:"Writing assistant.",url:"https://grammarly.com"},
+{name:"Wordtune",cat:"writing",price:"freemium",rating:4.4,best:"Rewrite",desc:"Rewrite content.",url:"https://wordtune.com"},
+{name:"QuillBot",cat:"writing",price:"freemium",rating:4.6,best:"Paraphrase",desc:"Rewriting AI.",url:"https://quillbot.com"},
+{name:"Writesonic",cat:"writing",price:"freemium",rating:4.4,best:"SEO",desc:"SEO writing.",url:"https://writesonic.com"},
+{name:"Anyword",cat:"writing",price:"paid",rating:4.3,best:"Ads",desc:"Ad copy AI.",url:"https://anyword.com"},
+{name:"HyperWrite",cat:"writing",price:"freemium",rating:4.2,best:"Assistant",desc:"Writing helper.",url:"https://hyperwriteai.com"},
+{name:"Scalenut",cat:"writing",price:"paid",rating:4.3,best:"SEO AI",desc:"SEO content.",url:"https://scalenut.com"},
+{name:"Frase",cat:"writing",price:"paid",rating:4.4,best:"SEO Research",desc:"Content optimization.",url:"https://frase.io"},
+
+/* ========= CODING (47–58) ========= */
+{name:"GitHub Copilot",cat:"coding",price:"paid",rating:4.9,best:"Code AI",desc:"AI code completion.",url:"https://github.com/features/copilot"},
+{name:"Cursor",cat:"coding",price:"freemium",rating:4.7,best:"AI Editor",desc:"Code editor.",url:"https://cursor.sh"},
+{name:"Codeium",cat:"coding",price:"free",rating:4.6,best:"Autocomplete",desc:"Code suggestions.",url:"https://codeium.com"},
+{name:"Tabnine",cat:"coding",price:"freemium",rating:4.4,best:"Dev AI",desc:"Smart coding.",url:"https://tabnine.com"},
+{name:"Replit Ghostwriter",cat:"coding",price:"paid",rating:4.5,best:"Cloud IDE",desc:"Browser coding.",url:"https://replit.com"},
+{name:"AskCodi",cat:"coding",price:"freemium",rating:4.3,best:"Code Help",desc:"AI coding help.",url:"https://askcodi.com"},
+{name:"Blackbox AI",cat:"coding",price:"freemium",rating:4.4,best:"Code Search",desc:"Search code.",url:"https://blackbox.ai"},
+{name:"Sourcegraph Cody",cat:"coding",price:"paid",rating:4.5,best:"Large Codebase",desc:"Enterprise AI.",url:"https://sourcegraph.com"},
+{name:"Mutable AI",cat:"coding",price:"paid",rating:4.3,best:"Refactor",desc:"Code refactoring.",url:"https://mutable.ai"},
+{name:"Continue.dev",cat:"coding",price:"free",rating:4.4,best:"Local AI",desc:"Local coding AI.",url:"https://continue.dev"},
+{name:"Lovable",cat:"coding",price:"freemium",rating:4.5,best:"App Builder",desc:"Prompt apps.",url:"https://lovable.dev"},
+{name:"Bolt.new",cat:"coding",price:"freemium",rating:4.6,best:"Fullstack",desc:"Instant apps.",url:"https://bolt.new"},
+
+/* ========= PRODUCTIVITY / OTHER (59–100) ========= */
+{name:"Notion AI",cat:"productivity",price:"freemium",rating:4.6,best:"Notes",desc:"AI workspace.",url:"https://notion.so"},
+{name:"Taskade",cat:"productivity",price:"freemium",rating:4.4,best:"Tasks",desc:"Task AI.",url:"https://taskade.com"},
+{name:"ClickUp AI",cat:"productivity",price:"paid",rating:4.5,best:"Projects",desc:"Project AI.",url:"https://clickup.com"},
+{name:"Zapier AI",cat:"automation",price:"freemium",rating:4.6,best:"Automation",desc:"Workflow AI.",url:"https://zapier.com"},
+{name:"n8n",cat:"automation",price:"free",rating:4.6,best:"Open Automation",desc:"Visual automation.",url:"https://n8n.io"},
+{name:"Make.com",cat:"automation",price:"freemium",rating:4.5,best:"Integrations",desc:"Workflow builder.",url:"https://make.com"},
+{name:"ElevenLabs",cat:"voice",price:"freemium",rating:4.9,best:"AI Voice",desc:"Voice generation.",url:"https://elevenlabs.io"},
+{name:"Murf",cat:"voice",price:"freemium",rating:4.6,best:"Voiceover",desc:"TTS voices.",url:"https://murf.ai"},
+{name:"Play.ht",cat:"voice",price:"freemium",rating:4.4,best:"Audio",desc:"Speech synthesis.",url:"https://play.ht"},
+{name:"Suno",cat:"music",price:"freemium",rating:4.7,best:"AI Songs",desc:"Music gen.",url:"https://suno.ai"},
+{name:"Udio",cat:"music",price:"freemium",rating:4.6,best:"Music AI",desc:"AI tracks.",url:"https://udio.com"},
+{name:"AIVA",cat:"music",price:"paid",rating:4.4,best:"Composer",desc:"AI composer.",url:"https://aiva.ai"},
+{name:"AdCreative",cat:"marketing",price:"paid",rating:4.4,best:"Ads",desc:"Ad creatives.",url:"https://adcreative.ai"},
+{name:"AirOps",cat:"marketing",price:"paid",rating:4.3,best:"SEO AI",desc:"Marketing workflows.",url:"https://airops.com"},
+{name:"HubSpot AI",cat:"marketing",price:"freemium",rating:4.5,best:"CRM",desc:"Marketing AI.",url:"https://hubspot.com"},
+{name:"Attio",cat:"sales",price:"paid",rating:4.5,best:"AI CRM",desc:"Sales intelligence.",url:"https://attio.com"},
+{name:"Gong",cat:"sales",price:"paid",rating:4.6,best:"Sales Calls",desc:"Conversation AI.",url:"https://gong.io"},
+{name:"Lavender",cat:"sales",price:"paid",rating:4.4,best:"Email Sales",desc:"Sales emails.",url:"https://lavender.ai"},
+{name:"DeepL Write",cat:"writing",price:"freemium",rating:4.6,best:"Rewrite",desc:"Writing improvement.",url:"https://deepl.com"},
+{name:"Elicit",cat:"research",price:"freemium",rating:4.5,best:"Research AI",desc:"Paper analysis.",url:"https://elicit.org"},
+{name:"Consensus",cat:"research",price:"freemium",rating:4.4,best:"Science AI",desc:"Evidence search.",url:"https://consensus.app"},
+{name:"SciSpace",cat:"research",price:"freemium",rating:4.3,best:"Paper AI",desc:"Explain papers.",url:"https://scispace.com"},
+{name:"NotebookAI",cat:"research",price:"free",rating:4.2,best:"Notes AI",desc:"AI notes.",url:"#"},
+{name:"Gamma",cat:"presentation",price:"freemium",rating:4.6,best:"Slides",desc:"AI presentations.",url:"https://gamma.app"},
+{name:"Copilot PPT",cat:"presentation",price:"paid",rating:4.7,best:"Slides AI",desc:"PowerPoint AI.",url:"https://microsoft.com"},
+{name:"Teal",cat:"resume",price:"freemium",rating:4.5,best:"Resume",desc:"Resume AI.",url:"https://tealhq.com"},
+{name:"Kickresume",cat:"resume",price:"paid",rating:4.6,best:"CV AI",desc:"Professional CVs.",url:"https://kickresume.com"}
+
+];
+
+    let priceFilter = "all", rateFilter = 0;
+
+    function renderTools() {
+        const grid = document.getElementById("grid");
+        const search = document.getElementById("search").value.toLowerCase();
+        const cat = document.getElementById("category").value;
+
+        const filtered = tools.filter(t => 
+            (t.name.toLowerCase().includes(search) || t.best.toLowerCase().includes(search)) &&
+            (cat === "all" || t.cat === cat) &&
+            (priceFilter === "all" || t.price === priceFilter) &&
+            (rateFilter === 0 || t.rating >= rateFilter)
+        );
+
+        grid.innerHTML = filtered.map(t => `
+            <div class="card">
+                <span class="badge">${t.price}</span><br>
+                <span class="best-tag">${t.best}</span>
+                <h3 style="margin-top:15px">${t.name}</h3>
+                <div class="stars">⭐ ${t.rating} / 5</div>
+                <p>${t.desc}</p>
+                <a class="visit-btn" href="${t.url}" target="_blank">Visit Tool</a>
+            </div>
+        `).join('');
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById("themeToggle");
+        if (body.getAttribute("data-theme") === "light") {
+            body.setAttribute("data-theme", "dark");
+            btn.innerHTML = "☀️ Light Mode";
+        } else {
+            body.setAttribute("data-theme", "light");
+            btn.innerHTML = "🌙 Dark Mode";
+        }
+    }
+
+    // Filters
+    document.querySelectorAll(".btn").forEach(b => {
+        b.onclick = () => {
+            const type = b.dataset.type, val = b.dataset.val;
+            if (type === "price") priceFilter = b.classList.contains("active") ? "all" : val;
+            else rateFilter = b.classList.contains("active") ? 0 : Number(val);
+            document.querySelectorAll(`.btn[data-type="${type}"]`).forEach(x => x.classList.remove("active"));
+            if (priceFilter === val || rateFilter === Number(val)) b.classList.add("active");
+            renderTools();
+        };
+    });
+
+    document.getElementById("search").oninput = renderTools;
+    document.getElementById("category").onchange = renderTools;
+        renderTools();
+</script>
+</body>
+</html>
